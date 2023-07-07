@@ -9,25 +9,6 @@ namespace WebApiTelegramBot.Services
 {
     public partial class BotUpdateHandler
     {
-        /*private readonly ProgressBookService _progressBookService;
-        private readonly TimeTableService _timeTableService;
-        private readonly StudentService _studentService;
-        private readonly GroupService _groupService;
-        public BotUpdateHandler(
-            ProgressBookService progressBookService,
-            TimeTableService timeTableService,
-            StudentService studentService,
-            GroupService groupService)
-        {
-            _progressBookService = progressBookService;
-            _timeTableService = timeTableService;
-            _studentService = studentService;
-            _groupService = groupService;
-        }
-        public BotUpdateHandler()
-        {
-
-        }*/
         private async Task HandleMessageAsync(ITelegramBotClient botClient, Message? message, CultureInfo culture, CancellationToken cancellationToken)
         {
 
@@ -114,14 +95,14 @@ namespace WebApiTelegramBot.Services
             }
             else if (message?.Text == "/auth")
             {
-                await HadleAuthUserAsync(botClient,message.From.Id,message,culture, cancellationToken);
+                await HadleAuthorizeUserAsync(botClient,message.From.Id,message,culture, cancellationToken);
             }
             else if (message?.Text == "/myaverage")
             {
                 var user = await _userService.GetPhoneNumberUserAsync(message.From.Id);
                 if (user.PhoneNumber == null)
                 {
-                    await HadleUnAutorizedMessageUserAsync(botClient,message.From.Id,culture,cancellationToken);
+                    await HadleUnAuthorizeMessageUserAsync(botClient,message.From.Id,culture,cancellationToken);
                     return;
                 }
                 var student = await _studentService.GetStudentByUserIdAsync(message.From.Id);
@@ -176,7 +157,7 @@ namespace WebApiTelegramBot.Services
                    replyToMessageId: message.MessageId,
                    cancellationToken:cancellationToken);
         }
-        private async Task HadleUnAutorizedMessageUserAsync(ITelegramBotClient botClient, long fromId,CultureInfo culture, CancellationToken cancellationToken)
+        private async Task HadleUnAuthorizeMessageUserAsync(ITelegramBotClient botClient, long fromId,CultureInfo culture, CancellationToken cancellationToken)
         {
            /* string text;
             if (culture.Parent.Name == "ru")
@@ -206,7 +187,7 @@ namespace WebApiTelegramBot.Services
                 cancellationToken: cancellationToken
                 );
         }
-        private async Task HadleAuthUserAsync(ITelegramBotClient botClient,long fromId, Message message, CultureInfo culture, CancellationToken cancellationToken)
+        private async Task HadleAuthorizeUserAsync(ITelegramBotClient botClient,long fromId, Message message, CultureInfo culture, CancellationToken cancellationToken)
         {
             string text;
             if (culture.Parent.Name == "ru")
@@ -267,7 +248,7 @@ namespace WebApiTelegramBot.Services
             }
             else if (callbackQuery.Data == "/auth")
             {
-                await HadleAuthUserAsync(botClient,callbackQuery.From.Id, update.Message, culture, cancellationToken);
+                await HadleAuthorizeUserAsync(botClient,callbackQuery.From.Id, update.Message, culture, cancellationToken);
             }
             else
             {
